@@ -1,14 +1,13 @@
-import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:feedback_bot/chatbloc/bloc/chatbloc_bloc.dart';
-import 'package:feedback_bot/chatbloc/bloc/chatbloc_event.dart';
-import 'package:feedback_bot/chatbloc/bloc/chatbloc_state.dart';
-import 'package:feedback_bot/widgets/widgets.dart';
+import 'package:feedback_bot/presentation/bloc/chatbloc_bloc.dart';
+import 'package:feedback_bot/presentation/bloc/chatbloc_event.dart';
+import 'package:feedback_bot/presentation/bloc/chatbloc_state.dart';
+import 'package:feedback_bot/data/api_service.dart';
+import 'package:feedback_bot/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -22,16 +21,19 @@ class _ChatScreenState extends State<ChatScreen> {
   List<Map<String, String>> messages = [
     {
       "type": "received",
-      "msg": "Hi, Welcome to Centralogic Feedback Agent! Thank you for your interest in CentraLogic!"
+      "msg": "Hi, Welcome to Centralogic Feedback Agent! Thank you for your interest in CentraLogic!",
     }
   ];
   final String apiUrl = "https://sapdos-api.azurewebsites.net/api/Credentials/FeedbackJoiningBot";
+
+  late ApiService apiService;
 
   @override
   void initState() {
     super.initState();
     textEditingController = TextEditingController();
     checkConnectivity();
+    apiService = ApiService(apiUrl);
   }
 
   @override
@@ -74,7 +76,7 @@ class _ChatScreenState extends State<ChatScreen> {
               'Hi, Charles',
               style: TextStyle(
                 fontSize: 16,
-                fontFamily: 'Roboto'
+                fontFamily: 'Roboto',
               ),
             ),
           ],
@@ -83,9 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
       body: BlocConsumer<ChatBloc, ChatState>(
         listener: (context, state) {
           if (state is ChatErrorState) {
-            
             if (state.errorMessage.toLowerCase().contains("network")) {
-             
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Please connect to the internet.'),
@@ -116,7 +116,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         'CentraLogic BOT',
                         style: TextStyle(
                           fontSize: 18,
-                          fontWeight: FontWeight.w600
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       const Text("Hi, I'm your feedback agent"),
@@ -127,12 +127,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                       Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 16
-                        ),
-                        constraints: const BoxConstraints(
-                          maxWidth: 936
-                        ),
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        constraints: const BoxConstraints(maxWidth: 936),
                         child: Column(
                           children: [
                             // Combined messages
@@ -210,7 +206,6 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  // Function to send a message
   void sendMessage(String message) async {
     if (message.isNotEmpty) {
       setState(() {
@@ -223,34 +218,18 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> fetchApiData(String userMessage) async {
     try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({'message': userMessage}),
-      );
+      final Map<String, dynamic>? data = await apiService.fetchData(userMessage);
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic>? data = jsonDecode(response.body);
+      if (data != null && data['type'] == 'PROMPT') {
+        final String promptMessage = data['message'];
 
-        if (data != null && data['type'] == 'PROMPT') {
-          final String promptMessage = data['message'];
-
-          setState(() {
-            messages.add({"type": "received", "msg": promptMessage});
-          });
-        } 
-      } else {
-        // Send error event with appropriate error message
-        BlocProvider.of<ChatBloc>(context).add(
-          ChatErrorEvent("Error sending message: ${response.statusCode}"),
-        );
+        setState(() {
+          messages.add({"type": "received", "msg": promptMessage});
+        });
       }
     } catch (e) {
-      // Send network error event
       BlocProvider.of<ChatBloc>(context).add(
-        ChatErrorEvent("Network error: $e"),
+        ChatErrorEvent(e.toString()),
       );
     }
   }

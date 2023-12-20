@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:feedback_bot/presentation/bloc/chatbloc_event.dart';
 import 'chatbloc_state.dart';
-import 'chatbloc_event.dart';
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc() : super(ChatInitialState());
 
@@ -20,3 +20,4 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
 }
+
