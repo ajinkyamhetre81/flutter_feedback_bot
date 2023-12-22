@@ -1,16 +1,11 @@
-# feedback_bot
+Dekstop View:
 
-A new Flutter project.
+![Screenshot (131)](https://github.com/ajinkyamhetre81/flutter_feedback_bot/assets/114176664/9f5f23c8-5b70-4e6a-88c2-15dbfb3538b0)
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+Mobile view:
 
-A few resources to get you started if this is your first Flutter project:
+![11](https://github.com/ajinkyamhetre81/flutter_feedback_bot/assets/114176664/5b47a9b2-81be-4f95-8dd7-3374a00e1e24)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+![22](https://github.com/ajinkyamhetre81/flutter_feedback_bot/assets/114176664/81168857-715c-49e0-83da-7930a0ce8488)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
