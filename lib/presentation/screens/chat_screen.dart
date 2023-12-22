@@ -215,15 +215,13 @@ class _ChatScreenState extends State<ChatScreen> {
       await fetchApiData(message);
     }
   }
-
   Future<void> fetchApiData(String userMessage) async {
     try {
-      final Map<String, dynamic>? data = await apiService.fetchData(userMessage);
-
-      if (data != null && data['type'] == 'PROMPT') {
-        final String promptMessage = data['message'];
-
+      int step=int.parse(userMessage);
+      final Map<String, dynamic>? data = await apiService.fetchData(step);
+      if (data != null && data['type'] == 'PROMPT' ) {
         setState(() {
+         final String promptMessage = data['message'];
           messages.add({"type": "received", "msg": promptMessage});
         });
       }

@@ -7,14 +7,15 @@ class ApiService {
 
   ApiService(this.apiUrl);
 
-  Future<Map<String, dynamic>?> fetchData(String userMessage) async {
+  Future<Map<String, dynamic>?> fetchData(int userMessage) async {
+    print("IN CLASS:"+userMessage.toString());
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({'message': userMessage}),
+        body: jsonEncode({'step': userMessage.toString()}),
       );
 
       if (response.statusCode == 200) {

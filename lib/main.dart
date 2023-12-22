@@ -1,5 +1,5 @@
 import 'package:feedback_bot/presentation/bloc/chatbloc_bloc.dart';
-import 'package:feedback_bot/presentation/chat_screen.dart';
+import 'package:feedback_bot/presentation/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
